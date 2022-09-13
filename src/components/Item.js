@@ -1,7 +1,7 @@
 import React from "react";
 
 const Item = (prop) => {
-  const { item, index, handleDelete, setIdEdit } = prop;
+  const { item, index, handleDeleteItem, setIdEdit } = prop;
 
   return (
     <tr>
@@ -11,7 +11,7 @@ const Item = (prop) => {
         <button type="button" className="btn btn-warning btn-sm" onClick={() => setIdEdit(index)}>
           Sửa
         </button>
-        <button type="button" className="btn btn-danger btn-sm" onClick={() => handleDelete(index)}>
+        <button type="button" className="btn btn-danger btn-sm" onClick={() => handleDeleteItem(item.id)}>
           Xoá
         </button>
       </td>

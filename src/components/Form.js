@@ -1,7 +1,7 @@
 import React from "react";
 
 const Form = (props) => {
-  const { listItem, setItem } = props;
+  const { handleAddItem } = props;
   const [title, setTitle] = React.useState("");
 
   const addNewTitle = (event) => {
@@ -11,8 +11,7 @@ const Form = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (title) {
-      const newList = [...listItem, { name: title }];
-      setItem(newList);
+      handleAddItem(title);
       setTitle("");
     }
   };

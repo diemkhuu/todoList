@@ -1,47 +1,65 @@
 import "./App.css";
 import React from "react";
+import { v4 as uuidv4 } from "uuid";
+
+import { removeAccents } from "./util/string";
 import Title from "./components/Title";
 import Form from "./components/Form";
-import ListItem from "./components/ListItem";
+import ItemList from "./components/ItemList";
 import Search from "./components/Search";
 import Items from "./data/Items";
-import { removeAccents } from "./util/string";
 
 const App = () => {
-  const [listItem, setListItem] = React.useState([]);
-  const [searchListItem, setSearchListItem] = React.useState([]);
+  const [itemList, setItemList] = React.useState([]);
+  const [searchList, setSearchList] = React.useState([]);
+  const [isSearching, setIsSearching] = React.useState(false);
   const [idEdit, setIdEdit] = React.useState("");
-  const list = searchListItem.length > 0 ? searchListItem : listItem;
+  const list = isSearching ? searchList : itemList;
 
-  const handleDelete = (index) => {
-    const newList = listItem.filter((item, idx) => idx !== index);
-
-    setListItem(newList);
+  const handleAddItem = (title) => {
+    const newList = [...itemList, { id: uuidv4(), name: title }];
+    setItemList(newList);
   };
 
-  const handleEditItem = (index, item) => {
-    const newList = [...listItem];
-    newList[index] = item;
+  const handleEditItem = (id, item) => {
+    const newList = [...itemList];
+    newList.map((el) => {
+      if (el.id === id) {
+        el.name = item;
+      }
+    });
 
-    setListItem(newList);
+    setItemList(newList);
+  };
+
+  const handleDeleteItem = (id) => {
+    if (isSearching) {
+      const newSearchList = searchList.filter((item) => item.id !== id);
+      setSearchList(newSearchList);
+    }
+
+    const newList = itemList.filter((item) => item.id !== id);
+    setItemList(newList);
   };
 
   const handleSearchItem = (title) => {
     if (title) {
-      const newList = listItem.filter((item) => {
+      const newList = itemList.filter((item) => {
         const newStr = removeAccents(item.name);
 
         return newStr.includes(title.toLowerCase());
       });
-      return setSearchListItem(newList);
+      setIsSearching(true);
+      return setSearchList(newList);
     }
-    return setSearchListItem([]);
+    setIsSearching(false);
+    return setSearchList([]);
   };
 
   // componentDidMount
   React.useEffect(() => {
     console.log("mounted");
-    setListItem(Items);
+    setItemList(Items);
   }, []);
 
   return (
@@ -53,7 +71,7 @@ const App = () => {
           <Search handleSearchItem={handleSearchItem} />
         </div>
         <div className="col">
-          <Form setItem={setListItem} listItem={listItem} />
+          <Form handleAddItem={handleAddItem} />
         </div>
       </div>
       <div className="panel panel-success">
@@ -68,7 +86,7 @@ const App = () => {
             </tr>
           </thead>
           <tbody>
-            <ListItem listItem={list} handleDelete={handleDelete} idEdit={idEdit} setIdEdit={setIdEdit} handleEditItem={handleEditItem} />
+            <ItemList itemList={list} handleDeleteItem={handleDeleteItem} idEdit={idEdit} setIdEdit={setIdEdit} handleEditItem={handleEditItem} />
           </tbody>
         </table>
       </div>

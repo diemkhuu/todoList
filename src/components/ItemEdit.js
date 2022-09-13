@@ -9,7 +9,7 @@ const ItemEdit = (props) => {
   };
 
   const handleEdit = () => {
-    handleEditItem(index, { name: title });
+    handleEditItem(item.id, title);
     setIdEdit("");
   };
 
